@@ -9,7 +9,7 @@
     "build": "webpack && webpack --mode=build",
     "dev": "webpack --progress --colors --watch --mode=dev",
     "dev-example": "webpack --config webpack.example.config.js --watch --mode=dev",
-    "build-example": "browserify example/index.js -o example/bundle.js -t [ babelify --presets [ es2015 react ] ]",
+    "build-example": "browserify example/index.js -o example/bundle.js -t [ babelify ]",
     "prepublish": "rimraf lib && npm run build"
   },
   "devDependencies": {
