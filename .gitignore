@@ -1,0 +1,10 @@
+node_modules
+.idea
+.DS_Store
+.sass-cache
+*.log
+static
+submodules
+lib
+example/bundle.js
+example/bundle.js.map
