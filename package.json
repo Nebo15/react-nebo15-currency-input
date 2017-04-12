@@ -24,7 +24,6 @@
     "babel-preset-stage-0": "^6.22.0",
     "babel-require": "^1.0.1",
     "chai": "^3.5.0",
-    "chai-spies": "^0.7.1",
     "enzyme": "^2.8.0",
     "eslint": "^3.5.0",
     "eslint-config-airbnb": "11.1.0",
@@ -38,6 +37,8 @@
     "react-addons-test-utils": "^15.5.1",
     "react-dom": "^15.5.3",
     "rimraf": "^2.6.1",
+    "sinon": "^2.1.0",
+    "sinon-chai": "^2.9.0",
     "webpack": "1.12.9",
     "yargs": "3.32.0"
   },

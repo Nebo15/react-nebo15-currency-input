@@ -7,7 +7,9 @@
     "mocha": true
   },
   "globals": {
-    "expect": true
+    "expect": true,
+    "chai": true,
+    "sinon": true
   },
   "plugins": [],
   "rules": {

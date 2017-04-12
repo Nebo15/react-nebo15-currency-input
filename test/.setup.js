@@ -1,5 +1,9 @@
-import { expect } from 'chai';
+import chai, { expect } from 'chai';
+import sinon from 'sinon';
+import sinonChai from 'sinon-chai';
 import { jsdom } from 'jsdom';
+
+chai.use(sinonChai);
 
 var exposedProperties = ['window', 'navigator', 'document', 'KeyboardEvent', 'Event'];
 
@@ -20,3 +24,4 @@ global.KeyboardEvent = window.KeyboardEvent;
 
 global.documentRef = document;
 global.expect = expect;
+global.sinon = sinon;
