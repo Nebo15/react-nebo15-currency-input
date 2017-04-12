@@ -2,6 +2,7 @@
   "presets": ["es2015", "stage-0", "react"],
   "plugins": [
     "babel-plugin-add-module-exports",
-    "transform-es5-property-mutators"
+    "transform-es5-property-mutators",
+    "transform-class-properties"
   ]
 }
