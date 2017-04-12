@@ -11,40 +11,40 @@ const WHITELIST_KEYS = [
 const prevent = (e) => {
   e.preventDefault();
   e.stopPropagation();
-  e.returnValue = false;
-  e.cancelBubble = true;
+  e.returnValue = false; // eslint-disable-line
+  e.cancelBubble = true; // eslint-disable-line
 };
 
 const isNumber = key => /[\d]+/.test(key);
 const isWhiteListKey = key => ~WHITELIST_KEYS.indexOf(key);
 const normalizeValue = (value, decimalSeparator, precision) => {
-  value = value.replace(new RegExp(`[^\\d\\${decimalSeparator}]+`, 'g'), '');
+  let result = value.replace(new RegExp(`[^\\d\\${decimalSeparator}]+`, 'g'), '');
 
-  value = value.split('.');
+  result = result.split('.');
 
-  if (value.length > 2) {
-    value[1] = value.slice(1).join('')
+  if (result.length > 2) {
+    result[1] = result.slice(1).join('');
   }
 
-  if (value.length > 2) {
-    value = `${value[0]}.${value[1].replace('.', '').slice(0, precision)}`
+  if (result.length > 2) {
+    result = `${result[0]}.${result[1].replace('.', '').slice(0, precision)}`;
   } else {
-    if (value[1]) {
-      value[1] = value[1].slice(0, precision);
+    if (result[1]) {
+      result[1] = result[1].slice(0, precision);
     }
 
-    value = value.join('.');
+    result = result.join('.');
   }
 
-  if (value.indexOf(decimalSeparator) === 0) {
-    value = `0${value}`;
+  if (result.indexOf(decimalSeparator) === 0) {
+    result = `0${result}`;
   }
 
-  if (value.length && value.indexOf(decimalSeparator) === value.length - 1) {
-    value = `${value}${new Array(precision + 1).join('0')}`;
+  if (result.length && result.indexOf(decimalSeparator) === result.length - 1) {
+    result = `${result}${new Array(precision + 1).join('0')}`;
   }
 
-  return value;
+  return result;
 };
 
 export default class CurrencyInput extends React.Component {
@@ -52,10 +52,8 @@ export default class CurrencyInput extends React.Component {
     onChange: () => {},
   };
 
-  lastValue = null;
-
   componentDidMount() {
-    const { decimalSeparator, thousandSeparator, precision } = this.props;
+    const { decimalSeparator, precision } = this.props;
 
     this.onKeyDown = (e) => {
       const decimalPosition = e.target.value.indexOf(decimalSeparator);
@@ -123,6 +121,7 @@ export default class CurrencyInput extends React.Component {
     this.$input.removeEventListener('input', this.onInput, false);
   }
 
+  lastValue = null;
   set value(value) {
     if (this.lastValue === value) {
       return;
@@ -140,10 +139,10 @@ export default class CurrencyInput extends React.Component {
   }
 
   render() {
-    const { decimalSeparator, thousandSeparator, precision, onChange, ...props } = this.props;
+    const { decimalSeparator, thousandSeparator, precision, onChange, ...props } = this.props; // eslint-disable-line
 
     return (
-      <input ref={(ref) => (this.$input = ref)} {...props} />
+      <input ref={ref => (this.$input = ref)} {...props} />
     );
   }
 }
