@@ -1,10 +1,5 @@
 import React from 'react';
 import { mount } from 'enzyme';
-import chai, { expect } from 'chai';
-import spies from 'chai-spies';
-
-chai.use(spies);
-
 import CurrencyInput from '../src/index';
 
 describe('Currency input', () => {
@@ -13,14 +8,12 @@ describe('Currency input', () => {
     expect(elem.find('input[type="text"]')).to.have.length(1);
   });
 
-  it('onChange', () => {
-    const onChange = chai.spy(() => {});
-    const elem = mount(<CurrencyInput type="text" onChange={onChange} />);
-
-    document.body.dispatchEvent(new window.Event('input', { bubbles: true }));
-
-    elem.find('input').simulate('change', { target: { value: '1000' } });
-
-    expect(onChange).to.have.been.called();
-  })
+  describe('onChange', () => {
+    it('should be called on input event', () => {
+      const cb = sinon.spy();
+      const elem = mount(<CurrencyInput type="text" onChange={cb} />);
+      elem.find('input').simulate('input', { target: { value: '1000' } });
+      expect(cb).to.have.been.calledWith('1000');
+    });
+  });
 });

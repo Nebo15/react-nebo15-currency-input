@@ -52,73 +52,68 @@ export default class CurrencyInput extends React.Component {
     onChange: () => {},
   };
 
-  componentDidMount() {
-    const { decimalSeparator, precision } = this.props;
-
-    this.onKeyDown = (e) => {
-      const decimalPosition = e.target.value.indexOf(decimalSeparator);
-
-      if (e.key === decimalSeparator && !~decimalPosition && precision) {
-        return;
-      }
-
-      if (!isWhiteListKey(e.key) && !isNumber(e.key) && !e.ctrlKey && !e.metaKey) {
-        prevent(e);
-      }
-    };
-
-    this.onBlur = () => {
-      this.value = normalizeValue(this.$input.value, decimalSeparator, precision);
-    };
-
-    this.onPaste = () => {
-      setTimeout(() => {
-        this.value = normalizeValue(this.$input.value, decimalSeparator, precision);
-      }, 0);
-    };
-
-    this.onInput = () => {
-      const decimalPosition = this.$input.value.indexOf(decimalSeparator);
-
-      if (~decimalPosition) {
-        const decimalLength = this.$input.value.split(decimalSeparator)[1].length;
-
-        if (decimalLength > precision) {
-          const focus = this.$input.selectionStart;
-          const val = this.$input.value.split(decimalSeparator);
-
-          this.$input.value = `${val[0]}${decimalSeparator}${val[1].slice(0, precision)}`;
-          this.$input.selectionStart = focus;
-          this.$input.selectionEnd = focus;
-        }
-      }
-
-      if (/^0[\d]+/.test(this.$input.value)) {
-        const focus = this.$input.selectionStart;
-
-        this.$input.value = this.$input.value.replace(/^0+/, '');
-        this.$input.selectionStart = focus - 1;
-        this.$input.selectionEnd = focus - 1;
-      }
-
-      const value = this.$input.value;
-      const normalize = normalizeValue(value, decimalSeparator, precision);
-
-      (value !== this.lastValue) && this.props.onChange(normalize);
-      this.lastValue = value;
-    };
-
-    this.$input.addEventListener('keydown', this.onKeyDown, false);
-    this.$input.addEventListener('blur', this.onBlur, false);
-    this.$input.addEventListener('paste', this.onPaste, false);
-    this.$input.addEventListener('input', this.onInput, false);
+  constructor(props) {
+    super(props);
+    this.onKeyDown = this.onKeyDown.bind(this);
+    this.onInput = this.onInput.bind(this);
+    this.onBlur = this.onBlur.bind(this);
+    this.onPaste = this.onPaste.bind(this);
   }
 
-  componentWillUnmount() {
-    this.$input.removeEventListener('keydown', this.onKeyDown, false);
-    this.$input.removeEventListener('blur', this.onBlur, false);
-    this.$input.removeEventListener('paste', this.onPaste, false);
-    this.$input.removeEventListener('input', this.onInput, false);
+  onKeyDown(e) {
+    const { decimalSeparator, precision } = this.props;
+    const decimalPosition = e.target.value.indexOf(decimalSeparator);
+
+    if (e.key === decimalSeparator && !~decimalPosition && precision) {
+      return;
+    }
+
+    if (!isWhiteListKey(e.key) && !isNumber(e.key) && !e.ctrlKey && !e.metaKey) {
+      prevent(e);
+    }
+  }
+
+  onBlur(e) {
+    const { decimalSeparator, precision } = this.props;
+    this.value = normalizeValue(e.target.value, decimalSeparator, precision);
+  }
+
+  onPaste() {
+    const { decimalSeparator, precision } = this.props;
+    setTimeout(() => {
+      this.value = normalizeValue(this.$input.value, decimalSeparator, precision);
+    }, 0);
+  }
+
+  onInput(e) {
+    const { decimalSeparator, precision } = this.props;
+    const value = e.target.value;
+    const decimalPosition = value.indexOf(decimalSeparator);
+
+    if (~decimalPosition) {
+      const decimalLength = value.split(decimalSeparator)[1].length;
+
+      if (decimalLength > precision) {
+        const focus = this.$input.selectionStart;
+        const val = value.split(decimalSeparator);
+
+        this.$input.value = `${val[0]}${decimalSeparator}${val[1].slice(0, precision)}`;
+        this.$input.selectionStart = focus;
+        this.$input.selectionEnd = focus;
+      }
+    }
+
+    if (/^0[\d]+/.test(this.$input.value)) {
+      const focus = this.$input.selectionStart;
+
+      this.$input.value = value.replace(/^0+/, '');
+      this.$input.selectionStart = focus - 1;
+      this.$input.selectionEnd = focus - 1;
+    }
+
+    const normalize = normalizeValue(value, decimalSeparator, precision);
+    (value !== this.lastValue) && this.props.onChange(normalize);
+    this.lastValue = value;
   }
 
   lastValue = null;
@@ -142,7 +137,14 @@ export default class CurrencyInput extends React.Component {
     const { decimalSeparator, thousandSeparator, precision, onChange, ...props } = this.props; // eslint-disable-line
 
     return (
-      <input ref={ref => (this.$input = ref)} {...props} />
+      <input
+        {...props}
+        onInput={this.onInput}
+        onKeyDown={this.onKeyDown}
+        onPaste={this.onPaste}
+        onBlur={this.onBlur}
+        ref={(v) => { this.$input = v; }}
+      />
     );
   }
 }

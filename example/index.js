@@ -8,7 +8,7 @@ ReactDOM.render(
     type="text"
     decimalSeparator="."
     precision={2}
-    onChange={(value) => console.log('Change', value)}
+    onChange={value => console.log('Change', value)}
   />,
   document.getElementById('example')
 );
