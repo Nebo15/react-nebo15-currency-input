@@ -20,6 +20,7 @@ script:
 - npm run lint && npm test || { exit 1; }
 after_success:
 - ./bin/ci/push.sh
+- npm run example:build
 deploy:
   provider: npm
   email: alexeybondarenko@me.com
@@ -29,3 +30,10 @@ deploy:
   on:
     branch: master
     repo: Nebo15/react-nebo15-currency-input
+deploy:
+  provider: pages
+  skip_cleanup: true
+  github_token: $GITHUB_TOKEN # Set in travis-ci.org dashboard
+  local_dir: example
+  on:
+    branch: master
