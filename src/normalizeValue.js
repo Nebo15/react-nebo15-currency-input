@@ -26,5 +26,9 @@ export default (value, decimalSeparator, precision) => {
     result = `${result}${new Array(precision + 1).join('0')}`;
   }
 
+  if (/^0[\d]+/.test(result)) {
+    result = result.replace(/^0/, '');
+  }
+
   return result;
 };

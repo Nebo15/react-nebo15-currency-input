@@ -67,21 +67,14 @@ export default class CurrencyInput extends React.Component {
       const decimalLength = value.split(decimalSeparator)[1].length;
 
       if (decimalLength > precision) {
-        const focus = this.$input.selectionStart;
         const val = value.split(decimalSeparator);
-
-        this.$input.value = `${val[0]}${decimalSeparator}${val[1].slice(0, precision)}`;
-        this.$input.selectionStart = focus;
-        this.$input.selectionEnd = focus;
+        this.setValueAndFocus(`${val[0]}${decimalSeparator}${val[1].slice(0, precision)}`);
       }
     }
 
     if (/^0[\d]+/.test(this.$input.value)) {
       const focus = this.$input.selectionStart;
-
-      this.$input.value = value.replace(/^0+/, '');
-      this.$input.selectionStart = focus - 1;
-      this.$input.selectionEnd = focus - 1;
+      this.setValueAndFocus(value.replace(/^0/, ''), focus - 1);
     }
 
     const normalize = normalizeValue(value, decimalSeparator, precision);
@@ -89,17 +82,23 @@ export default class CurrencyInput extends React.Component {
     this.lastValue = value;
   }
 
+  setValueAndFocus(value, focus) {
+    focus = focus !== undefined ? focus : this.$input.selectionStart; // eslint-disable-line
+
+    this.$input.value = value;
+    this.$input.selectionStart = focus;
+    this.$input.selectionEnd = focus;
+  }
+
   lastValue = null;
+
   set value(value) {
     if (this.lastValue === value) {
       return;
     }
 
     if (this.$input.value !== value) {
-      const focus = this.$input.selectionStart;
-      this.$input.value = value;
-      this.$input.selectionStart = focus;
-      this.$input.selectionEnd = focus;
+      this.setValueAndFocus(value);
     }
 
     this.lastValue = value;
