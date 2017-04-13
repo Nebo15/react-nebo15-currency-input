@@ -1,10 +1,5 @@
 import React from 'react';
 import { mount } from 'enzyme';
-import chai, { expect } from 'chai';
-import spies from 'chai-spies';
-
-chai.use(spies);
-
 import CurrencyInput from '../src/index';
 
 describe('Currency input', () => {
@@ -13,14 +8,75 @@ describe('Currency input', () => {
     expect(elem.find('input[type="text"]')).to.have.length(1);
   });
 
-  it('onChange', () => {
-    const onChange = chai.spy(() => {});
-    const elem = mount(<CurrencyInput type="text" onChange={onChange} />);
+  it('set value prop', () => {
+    const cb = sinon.spy();
+    const elem = mount(<CurrencyInput type="text" onChange={cb} precision={2} decimalSeparator="." />);
+    elem.instance().value = '999.99';
+    expect(cb).to.have.been.calledWith('999.99');
+  });
 
-    document.body.dispatchEvent(new window.Event('input', { bubbles: true }));
+  describe('onChange', () => {
+    it('should be called on input event', () => {
+      const cb = sinon.spy();
+      const elem = mount(<CurrencyInput type="text" onChange={cb} />);
+      elem.find('input').simulate('input', { target: { value: '1000' } });
+      expect(cb).to.have.been.calledWith('1000');
+    });
 
-    elem.find('input').simulate('change', { target: { value: '1000' } });
+    it('normalize decimal', () => {
+      const cb = sinon.spy();
+      const elem = mount(<CurrencyInput type="text" onChange={cb} precision={2} decimalSeparator="." />);
+      elem.find('input').simulate('input', { target: { value: '100.1234' } });
+      expect(cb).to.have.been.calledWith('100.12');
+    });
 
-    expect(onChange).to.have.been.called();
-  })
+    it('normalize two decimal', () => {
+      const cb = sinon.spy();
+      const elem = mount(<CurrencyInput type="text" onChange={cb} precision={2} decimalSeparator="." />);
+      elem.find('input').simulate('input', { target: { value: '100.12.34' } });
+      expect(cb).to.have.been.calledWith('100.12');
+    });
+
+    it('coma as decimal separator', () => {
+      const cb = sinon.spy();
+      const elem = mount(<CurrencyInput type="text" onChange={cb} precision={2} decimalSeparator="," />);
+      elem.find('input').simulate('input', { target: { value: '100,1234' } });
+      expect(cb).to.have.been.calledWith('100,12');
+    });
+
+    it('remove before zero', () => {
+      const cb = sinon.spy();
+      const elem = mount(<CurrencyInput type="text" onChange={cb} precision={2} decimalSeparator="." />);
+      elem.find('input').simulate('input', { target: { value: '0100.1234' } });
+      expect(cb).to.have.been.calledWith('100.12');
+    });
+
+    it('not remove before zero if next is decimal', () => {
+      const cb = sinon.spy();
+      const elem = mount(<CurrencyInput type="text" onChange={cb} precision={2} decimalSeparator="." />);
+      elem.find('input').simulate('input', { target: { value: '0.1234' } });
+      expect(cb).to.have.been.calledWith('0.12');
+    });
+
+    it('normalize separator and no decimal', () => {
+      const cb = sinon.spy();
+      const elem = mount(<CurrencyInput type="text" onChange={cb} precision={2} decimalSeparator="." />);
+      elem.find('input').simulate('input', { target: { value: '100.' } });
+      expect(cb).to.have.been.calledWith('100.00');
+    });
+
+    it('normalize separator and no integer', () => {
+      const cb = sinon.spy();
+      const elem = mount(<CurrencyInput type="text" onChange={cb} precision={2} decimalSeparator="." />);
+      elem.find('input').simulate('input', { target: { value: '.100' } });
+      expect(cb).to.have.been.calledWith('0.10');
+    });
+
+    it('normalize not number value', () => {
+      const cb = sinon.spy();
+      const elem = mount(<CurrencyInput type="text" onChange={cb} precision={2} decimalSeparator="." />);
+      elem.find('input').simulate('input', { target: { value: 'qwe123qwe' } });
+      expect(cb).to.have.been.calledWith('123');
+    });
+  });
 });

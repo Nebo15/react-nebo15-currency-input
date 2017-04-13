@@ -1,6 +1,6 @@
 {
   "name": "react-nebo15-currency-input",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Currency input for React JS",
   "main": "lib/react-nebo15-currency-input.min.js",
   "scripts": {
@@ -8,8 +8,8 @@
     "lint": "eslint src spec",
     "build": "webpack && webpack --mode=build",
     "dev": "webpack --progress --colors --watch --mode=dev",
-    "dev-example": "webpack --config webpack.example.config.js --watch --mode=dev",
-    "build-example": "browserify example/index.js -o example/bundle.js -t [ babelify --presets [ es2015 react ] ]",
+    "example:build": "webpack --config webpack.example.config.js --mode=build",
+    "example:dev": "webpack --config webpack.example.config.js --watch --mode=dev",
     "prepublish": "rimraf lib && npm run build"
   },
   "devDependencies": {
@@ -23,10 +23,7 @@
     "babel-preset-react": "^6.23.0",
     "babel-preset-stage-0": "^6.22.0",
     "babel-require": "^1.0.1",
-    "babelify": "^7.3.0",
-    "browserify": "^14.3.0",
     "chai": "^3.5.0",
-    "chai-spies": "^0.7.1",
     "enzyme": "^2.8.0",
     "eslint": "^3.5.0",
     "eslint-config-airbnb": "14.1.0",
@@ -39,8 +36,10 @@
     "mocha": "^3.2.0",
     "react-addons-test-utils": "^15.5.1",
     "react-dom": "^15.5.3",
+    "react-test-renderer": "^15.5.4",
     "rimraf": "^2.6.1",
     "sinon": "^2.1.0",
+    "sinon-chai": "^2.9.0",
     "webpack": "1.12.9",
     "yargs": "7.0.2"
   },
