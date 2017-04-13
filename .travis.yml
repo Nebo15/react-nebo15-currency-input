@@ -1,0 +1,39 @@
+language: node_js
+node_js:
+- 6.9.1
+cache:
+  directories:
+  - ~/.nvm
+  - node_modules
+git:
+  depth: 1
+env:
+  global:
+  - RELEASE_BRANCH="master"
+  - MAIN_BRANCHES="master develop"
+  - secure: kF9ap+mpxH5Hpw4RYbSVEfPw1CZMETVthL8uMfoTvQ29544Ipzsd1aUzSTo7M8MXyhCRlU5Axene0X+9/6awWk90PtleHSvokrpDdQ9I1mGfzRI5FGJLOzYtkT+UDXcinlKB2t8TpWUCRPnmspNJdrClr6QYFFHGynHS66COURMpWu52ZvImt/ISXWOcdfTCyLCMpDPW0s0ve8xAD+ub/FrxRxarYSYsoIfBb2IUYk95wW2g4/IbiFswfZOUcFgYRp7Ihx5LfLDzmDNRfVXBGPcfYWccgp5N7c/W9Zp27r426qdMwbCQohYqxLq71QPtseJlKSPlHlR+Jo5rdGUHtCsTU1R+FOz+rZHHdagPytzXVZrwUofSnUhy+PCgxsW34tdF2PwiKKJ0HK13XtsHPkAESB0UnYl0jmImOaycfTR2ouCXHru64yDIL2pRKeKxwHZVtrEdYfJPiMw+QZKWogCtOaNwSc6orRGtr29jWaMZr43b52hn5wUYZ42iTp4Fx+dJwhFcvF4I6eAT9iAVVvgAl6N+n6eByYPO3jpvuVRvksFlNDoqQJXGEmA14pKbDJih1DJkiYon9UR/oUvSbdu5YbkxynHh90dLETW9UBiDvQcF87hUTOY4JAncQISHWtcfTq/vAnCWmM5/ssSclfdiKQTtoKZW3JpuSt6u4EU=
+before_script:
+- chmod -R +x bin
+- ./bin/version-increment.sh || { exit 1; }
+- npm run build
+script:
+- npm run lint && npm test || { exit 1; }
+after_success:
+- ./bin/ci/push.sh
+- npm run example:build
+deploy:
+  provider: npm
+  email: alexeybondarenko@me.com
+  skip_cleanup: true
+  api_key:
+    secure: dASyJlh/ZSqV/QTpAteCbWh3baP+1EishSpS1mDOeDWj+eYBmWP29Lehx7IA6/0FFiubSvEx8MFi8Qse0CLXwOlOnqIfSGAmWiy7JN6qRGptUhJWerFLvvdv2Z/pA7YCGoMZkFbzIQq+evce48tV40HY5slP2mHUvRwIbTAtla8Z0ZIepELb69FJiiRA4TtUX4uXPiw1vdphNEZLIYra83D4B+EoK4lzmrqMdBRMZjGd1i1O1rniO184mBjzoA4HvJ7ITIHVsWGiA9cTqc/TJb1edJ16/yxxcrfpDkNoJJZ/bhKkDENlvGPAlJHtImdo9IUo814wUba/Xt2Xhp09MU+2iHfaT0b4eahOegS+iXlIOWTVAsZMUW7wNeidlEe8VSyBpQ3ZT2AHi6LNULfTAnqIJDEWh8POvM9Hj9RF0q1OIuSa3jspbxXfJRadiqbDG68ubsZTrIh8dTsXIb/qIYHLpfXAeGeK2xIUzgWoSB57jGrgAcMkfUOroP2Aa7KLU6R7lOBBgUQSQDYbPmpmh8pF8XvYyAuh4BgeaeMEW70LhPSaDphG1soZqC8TPnlhzPMiUbxtJ9RAuDUj+eO9oNQ6jYTPcg3vwAoJkub2fa+1xlFm46npJBmMDHGkmPIsOfo29Erh4gWxk3/f3wal9yfOt7Gi3WO81IiQhZoXnVk=
+  on:
+    branch: master
+    repo: Nebo15/react-nebo15-currency-input
+deploy:
+  provider: pages
+  skip_cleanup: true
+  github_token: $GITHUB_TOKEN # Set in travis-ci.org dashboard
+  local_dir: example
+  on:
+    branch: master
