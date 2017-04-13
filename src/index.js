@@ -23,6 +23,7 @@ const isWhiteListKey = key => ~WHITELIST_KEYS.indexOf(key);
 export default class CurrencyInput extends React.Component {
   static defaultProps = {
     onChange: () => {},
+    precision: 0,
   };
 
   constructor(props) {
@@ -102,7 +103,7 @@ export default class CurrencyInput extends React.Component {
     }
 
     this.lastValue = value;
-    this.props.onChange && this.props.onChange(value);
+    this.props.onChange(value);
   }
 
   render() {

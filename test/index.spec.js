@@ -8,6 +8,13 @@ describe('Currency input', () => {
     expect(elem.find('input[type="text"]')).to.have.length(1);
   });
 
+  it('set value prop', () => {
+    const cb = sinon.spy();
+    const elem = mount(<CurrencyInput type="text" onChange={cb} precision={2} decimalSeparator="." />);
+    elem.instance().value = '999.99';
+    expect(cb).to.have.been.calledWith('999.99');
+  });
+
   describe('onChange', () => {
     it('should be called on input event', () => {
       const cb = sinon.spy();
@@ -21,6 +28,55 @@ describe('Currency input', () => {
       const elem = mount(<CurrencyInput type="text" onChange={cb} precision={2} decimalSeparator="." />);
       elem.find('input').simulate('input', { target: { value: '100.1234' } });
       expect(cb).to.have.been.calledWith('100.12');
+    });
+
+    it('normalize two decimal', () => {
+      const cb = sinon.spy();
+      const elem = mount(<CurrencyInput type="text" onChange={cb} precision={2} decimalSeparator="." />);
+      elem.find('input').simulate('input', { target: { value: '100.12.34' } });
+      expect(cb).to.have.been.calledWith('100.12');
+    });
+
+    it('coma as decimal separator', () => {
+      const cb = sinon.spy();
+      const elem = mount(<CurrencyInput type="text" onChange={cb} precision={2} decimalSeparator="," />);
+      elem.find('input').simulate('input', { target: { value: '100,1234' } });
+      expect(cb).to.have.been.calledWith('100,12');
+    });
+
+    it('remove before zero', () => {
+      const cb = sinon.spy();
+      const elem = mount(<CurrencyInput type="text" onChange={cb} precision={2} decimalSeparator="." />);
+      elem.find('input').simulate('input', { target: { value: '0100.1234' } });
+      expect(cb).to.have.been.calledWith('100.12');
+    });
+
+    it('not remove before zero if next is decimal', () => {
+      const cb = sinon.spy();
+      const elem = mount(<CurrencyInput type="text" onChange={cb} precision={2} decimalSeparator="." />);
+      elem.find('input').simulate('input', { target: { value: '0.1234' } });
+      expect(cb).to.have.been.calledWith('0.12');
+    });
+
+    it('normalize separator and no decimal', () => {
+      const cb = sinon.spy();
+      const elem = mount(<CurrencyInput type="text" onChange={cb} precision={2} decimalSeparator="." />);
+      elem.find('input').simulate('input', { target: { value: '100.' } });
+      expect(cb).to.have.been.calledWith('100.00');
+    });
+
+    it('normalize separator and no integer', () => {
+      const cb = sinon.spy();
+      const elem = mount(<CurrencyInput type="text" onChange={cb} precision={2} decimalSeparator="." />);
+      elem.find('input').simulate('input', { target: { value: '.100' } });
+      expect(cb).to.have.been.calledWith('0.10');
+    });
+
+    it('normalize not number value', () => {
+      const cb = sinon.spy();
+      const elem = mount(<CurrencyInput type="text" onChange={cb} precision={2} decimalSeparator="." />);
+      elem.find('input').simulate('input', { target: { value: 'qwe123qwe' } });
+      expect(cb).to.have.been.calledWith('123');
     });
   });
 });
