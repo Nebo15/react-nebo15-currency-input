@@ -1,6 +1,14 @@
-# CurrencyInput
+# React Nebo15 Currency Input
+
+[![Build Status](https://travis-ci.org/Nebo15/react-nebo15-currency-input.svg?branch=master)](https://travis-ci.org/Nebo15/react-nebo15-currency-input)
 
 Component for formatting amount in input
+
+### Install
+
+```
+npm run react-nebo15-currency-input --save
+```
 
 ### Usage
 
