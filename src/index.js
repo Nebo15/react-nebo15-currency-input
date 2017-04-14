@@ -23,6 +23,10 @@ const isWhiteListKey = key => ~WHITELIST_KEYS.indexOf(key);
 export default class CurrencyInput extends React.Component {
   static defaultProps = {
     onChange: () => {},
+    onBlur: () => {},
+    onInput: () => {},
+    onPaste: () => {},
+    onKeyDown: () => {},
     precision: 0,
   };
 
@@ -45,18 +49,24 @@ export default class CurrencyInput extends React.Component {
     if (!isWhiteListKey(e.key) && !isNumber(e.key) && !e.ctrlKey && !e.metaKey) {
       prevent(e);
     }
+
+    this.props.onKeyDown(e);
   }
 
   onBlur(e) {
     const { decimalSeparator, precision } = this.props;
     this.value = normalizeValue(e.target.value, decimalSeparator, precision);
+
+    this.props.onBlur(e);
   }
 
-  onPaste() {
+  onPaste(e) {
     const { decimalSeparator, precision } = this.props;
     setTimeout(() => {
       this.value = normalizeValue(this.$input.value, decimalSeparator, precision);
     }, 0);
+
+    this.props.onPaste(e);
   }
 
   onInput(e) {
@@ -79,8 +89,10 @@ export default class CurrencyInput extends React.Component {
     }
 
     const normalize = normalizeValue(value, decimalSeparator, precision);
-    (value !== this.lastValue) && this.props.onChange(normalize);
+    (value !== this.lastValue) && this.props.onChange(normalize, value);
     this.lastValue = value;
+
+    this.props.onInput(e);
   }
 
   setValueAndFocus(value, focus) {
@@ -103,7 +115,7 @@ export default class CurrencyInput extends React.Component {
     }
 
     this.lastValue = value;
-    this.props.onChange(value);
+    this.props.onChange(value, this.$input.value);
   }
 
   render() {
