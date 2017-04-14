@@ -55,7 +55,15 @@ export default class CurrencyInput extends React.Component {
 
   onBlur(e) {
     const { decimalSeparator, precision } = this.props;
-    this.value = normalizeValue(e.target.value, decimalSeparator, precision);
+    let { value } = e.target;
+
+    value = normalizeValue(value, decimalSeparator, precision);
+
+    if (value.length && value.indexOf(decimalSeparator) === e.target.value.length - 1) {
+      this.value = `${value}${new Array(precision + 1).join('0')}`;
+    } else {
+      this.value = value;
+    }
 
     this.props.onBlur(e);
   }

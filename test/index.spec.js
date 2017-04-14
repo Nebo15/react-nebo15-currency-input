@@ -61,7 +61,8 @@ describe('Currency input', () => {
     it('normalize separator and no decimal', () => {
       const cb = sinon.spy();
       const elem = mount(<CurrencyInput type="text" onChange={cb} precision={2} decimalSeparator="." />);
-      elem.find('input').simulate('input', { target: { value: '100.' } });
+      elem.find('input').simulate('blur', { target: { value: '100.' } });
+
       expect(cb).to.have.been.calledWith('100.00');
     });
 

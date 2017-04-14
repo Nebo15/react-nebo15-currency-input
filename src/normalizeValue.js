@@ -21,10 +21,6 @@ export default (value, decimalSeparator, precision) => {
     result = `0${result}`;
   }
 
-  if (result.length && result.indexOf(decimalSeparator) === result.length - 1) {
-    result = `${result}${new Array(precision + 1).join('0')}`;
-  }
-
   if (/^0[\d]+/.test(result)) {
     result = result.replace(/^0+/, '');
   }
