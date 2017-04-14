@@ -1,5 +1,5 @@
 
-export default (value, decimalSeparator, precision) => {
+export default (value, { decimalSeparator, precision, zeroFill = false }) => {
   let result = value.replace(new RegExp(`[^\\d\\${decimalSeparator}]+`, 'g'), '');
   result = result.split(decimalSeparator);
 
@@ -21,7 +21,7 @@ export default (value, decimalSeparator, precision) => {
     result = `0${result}`;
   }
 
-  if (result.length && result.indexOf(decimalSeparator) === result.length - 1) {
+  if (zeroFill && result.length && result.indexOf(decimalSeparator) === result.length - 1) {
     result = `${result}${new Array(precision + 1).join('0')}`;
   }
 
