@@ -55,15 +55,12 @@ export default class CurrencyInput extends React.Component {
 
   onBlur(e) {
     const { decimalSeparator, precision } = this.props;
-    let { value } = e.target;
 
-    value = normalizeValue(value, decimalSeparator, precision);
-
-    if (value.length && value.indexOf(decimalSeparator) === e.target.value.length - 1) {
-      this.value = `${value}${new Array(precision + 1).join('0')}`;
-    } else {
-      this.value = value;
-    }
+    this.value = normalizeValue(e.target.value, {
+      decimalSeparator,
+      precision,
+      zeroFill: true,
+    });
 
     this.props.onBlur(e);
   }
@@ -71,7 +68,7 @@ export default class CurrencyInput extends React.Component {
   onPaste(e) {
     const { decimalSeparator, precision } = this.props;
     setTimeout(() => {
-      this.value = normalizeValue(this.$input.value, decimalSeparator, precision);
+      this.value = normalizeValue(this.$input.value, { decimalSeparator, precision });
     }, 0);
 
     this.props.onPaste(e);
@@ -96,7 +93,7 @@ export default class CurrencyInput extends React.Component {
       this.setValueAndFocus(value.replace(/^0/, ''), focus - 1);
     }
 
-    const normalize = normalizeValue(value, decimalSeparator, precision);
+    const normalize = normalizeValue(value, { decimalSeparator, precision });
     (value !== this.lastValue) && this.props.onChange(normalize, value);
     this.lastValue = value;
 
