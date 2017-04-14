@@ -79,5 +79,12 @@ describe('Currency input', () => {
       elem.find('input').simulate('input', { target: { value: 'qwe123qwe' } });
       expect(cb).to.have.been.calledWith('123');
     });
+
+    it('maxLength prop', () => {
+      const cb = sinon.spy();
+      const elem = mount(<CurrencyInput type="text" onChange={cb} precision={2} maxLength={5} decimalSeparator="." />);
+      elem.find('input').simulate('input', { target: { value: '123456789' } });
+      expect(cb).to.have.been.calledWith('12345');
+    });
   });
 });
