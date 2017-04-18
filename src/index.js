@@ -3,8 +3,6 @@ import KeyboardEvent from 'keyboardevent-key-polyfill';
 
 import normalizeValue from './normalizeValue';
 
-KeyboardEvent.polyfill();
-
 const WHITELIST_KEYS = [
   'Backspace', 'ArrowUp', 'ArrowDown', 'Tab',
   'ArrowLeft', 'ArrowRight', 'Enter', 'Escape',
@@ -36,6 +34,10 @@ export default class CurrencyInput extends React.Component {
     this.onInput = this.onInput.bind(this);
     this.onBlur = this.onBlur.bind(this);
     this.onPaste = this.onPaste.bind(this);
+  }
+
+  componentDidMount() { // eslint-disable-line
+    KeyboardEvent.polyfill();
   }
 
   onKeyDown(e) {
