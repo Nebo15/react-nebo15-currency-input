@@ -1,6 +1,6 @@
 {
   "name": "react-nebo15-currency-input",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "Currency input for React JS",
   "main": "lib/react-nebo15-currency-input.min.js",
   "scripts": {
