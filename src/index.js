@@ -39,7 +39,7 @@ export default class CurrencyInput extends React.Component {
   }
 
   onKeyDown(e) {
-    const { decimalSeparator, precision } = this.props;
+    const { decimalSeparator, precision, maxLength } = this.props;
     const decimalPosition = e.target.value.indexOf(decimalSeparator);
 
     if (e.key === decimalSeparator && !~decimalPosition && precision) {
@@ -48,6 +48,14 @@ export default class CurrencyInput extends React.Component {
 
     if (!isWhiteListKey(e.key) && !isNumber(e.key) && !e.ctrlKey && !e.metaKey) {
       prevent(e);
+    }
+
+    if (isNumber(e.key) && e.target.value.split(decimalSeparator)[0].length >= maxLength) {
+      const focus = this.$input.selectionStart;
+
+      if (!~decimalPosition || focus <= decimalPosition) {
+        prevent(e);
+      }
     }
 
     this.props.onKeyDown(e);
@@ -66,16 +74,16 @@ export default class CurrencyInput extends React.Component {
   }
 
   onPaste(e) {
-    const { decimalSeparator, precision } = this.props;
+    const { decimalSeparator, precision, maxLength } = this.props;
     setTimeout(() => {
-      this.value = normalizeValue(this.$input.value, { decimalSeparator, precision });
+      this.value = normalizeValue(this.$input.value, { decimalSeparator, precision, maxLength });
     }, 0);
 
     this.props.onPaste(e);
   }
 
   onInput(e) {
-    const { decimalSeparator, precision } = this.props;
+    const { decimalSeparator, precision, maxLength } = this.props;
     const value = e.target.value;
     const decimalPosition = value.indexOf(decimalSeparator);
 
@@ -88,12 +96,21 @@ export default class CurrencyInput extends React.Component {
       }
     }
 
+    if (!~decimalPosition) {
+      const intLength = value.split(decimalSeparator)[0].length;
+
+      if (intLength > maxLength) {
+        this.value = value.slice(0, maxLength);
+        return;
+      }
+    }
+
     if (/^0[\d]+/.test(this.$input.value)) {
       const focus = this.$input.selectionStart;
       this.setValueAndFocus(value.replace(/^0/, ''), focus - 1);
     }
 
-    const normalize = normalizeValue(value, { decimalSeparator, precision });
+    const normalize = normalizeValue(value, { decimalSeparator, precision, maxLength });
     (value !== this.lastValue) && this.props.onChange(normalize, value);
     this.lastValue = value;
 
@@ -124,7 +141,7 @@ export default class CurrencyInput extends React.Component {
   }
 
   render() {
-    const { decimalSeparator, thousandSeparator, precision, onChange, ...props } = this.props; // eslint-disable-line
+    const { decimalSeparator, thousandSeparator, precision, onChange, maxLength, ...props } = this.props; // eslint-disable-line
 
     return (
       <input

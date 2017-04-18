@@ -1,5 +1,5 @@
 
-export default (value, { decimalSeparator, precision, zeroFill = false }) => {
+export default (value, { decimalSeparator, precision, maxLength, zeroFill = false }) => {
   let result = value.replace(new RegExp(`[^\\d\\${decimalSeparator}]+`, 'g'), '');
   result = result.split(decimalSeparator);
 
@@ -27,6 +27,18 @@ export default (value, { decimalSeparator, precision, zeroFill = false }) => {
 
   if (/^0[\d]+/.test(result)) {
     result = result.replace(/^0+/, '');
+  }
+
+  if (maxLength !== undefined) {
+    const values = result.split(decimalSeparator);
+
+    if (values[0].length > maxLength) {
+      if (values[1]) {
+        result = `${values[0].slice(0, maxLength)}.${values[1]}`;
+      } else {
+        result = values[0].slice(0, maxLength);
+      }
+    }
   }
 
   return result;
